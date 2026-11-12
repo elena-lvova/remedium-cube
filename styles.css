@@ -58,7 +58,7 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .hero { position: absolute; left: clamp(28px, 5vw, 80px); top: 50%; transform: translateY(-50%); max-width: 560px; z-index: 10; transition: opacity .6s var(--ease), transform .6s var(--ease); }
 #app:not([data-chapter="0"]) .hero { opacity: 0; transform: translate(-30px, -50%); pointer-events: none; }
 .hero.pre { opacity: 0; transform: translate(-20px, -50%); }
-.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); margin-bottom: 22px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); margin-bottom: 22px; }
 .hero h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(36px, 5vw, 72px); line-height: 1.04; letter-spacing: -0.02em; margin-bottom: 24px; text-shadow: 0 4px 40px rgba(7,5,36,.8); }
 .hero h1 em { font-style: normal; background: linear-gradient(90deg, var(--teal), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero-lead { font-size: 18px; line-height: 1.55; color: #C9CEEE; max-width: 470px; margin-bottom: 32px; text-shadow: 0 2px 16px rgba(7,5,36,.9); }
