@@ -273,19 +273,19 @@ function drawService(svc, face, idx) {
   gr.addColorStop(0, hexA(face.color, 0.5)); gr.addColorStop(0.55, hexA(face.color, 0.12)); gr.addColorStop(1, hexA(face.color, 0.03));
   rr(g, 0, 0, S, S, 60); g.fillStyle = gr; g.fill();
   g.lineWidth = 7; g.strokeStyle = hexA(face.color, 0.9); rr(g, 12, 12, S - 24, S - 24, 50); g.stroke();
-  g.fillStyle = face.color; g.font = '800 34px Manrope'; g.textBaseline = 'alphabetic';
+  g.fillStyle = face.color; g.font = '800 34px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif'; g.textBaseline = 'alphabetic';
   g.fillText(String(idx + 1).padStart(2, '0'), 48, 86);
-  g.fillStyle = 'rgba(255,255,255,0.55)'; g.font = '700 22px Manrope';
+  g.fillStyle = 'rgba(255,255,255,0.55)'; g.font = '700 22px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif';
   if ('letterSpacing' in g) g.letterSpacing = '2px';
   g.fillText(face.short.toUpperCase(), 48, 120);
   if ('letterSpacing' in g) g.letterSpacing = '0px';
   if (svc.tag) {
-    g.font = '800 22px Manrope'; const t = svc.tag.toUpperCase(); const w = g.measureText(t).width + 28;
+    g.font = '800 22px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif'; const t = svc.tag.toUpperCase(); const w = g.measureText(t).width + 28;
     rr(g, S - 44 - w, 54, w, 42, 12); g.fillStyle = face.color; g.fill();
     g.fillStyle = face.ink; g.fillText(t, S - 44 - w + 14, 83);
   }
-  const fit = fitText(g, svc.label, '700 {s}px Manrope', 420, 3, 66, 40);
-  g.fillStyle = '#FFFFFF'; g.font = `700 ${fit.size}px Manrope`;
+  const fit = fitText(g, svc.label, '700 {s}px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif', 420, 3, 66, 40);
+  g.fillStyle = '#FFFFFF'; g.font = `700 ${fit.size}px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif`;
   const lh = fit.size * 1.12; let y = S - 58 - (fit.lines.length - 1) * lh;
   for (const l of fit.lines) { g.fillText(l, 48, y); y += lh; }
   return makeTex(c);
@@ -293,12 +293,12 @@ function drawService(svc, face, idx) {
 function drawCenter(face, i) {
   const S = 512; const c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
   const gr = g.createLinearGradient(0, 0, S, S);
-  gr.addColorStop(0, face.color); gr.addColorStop(1, new THREE.Color(face.color).lerp(new THREE.Color('#ffffff'), 0.25).getStyle());
+  gr.addColorStop(0, new THREE.Color(face.color).lerp(new THREE.Color('#ffffff'), 0.28).getStyle()); gr.addColorStop(1, new THREE.Color(face.color).lerp(new THREE.Color('#ffffff'), 0.55).getStyle());
   rr(g, 0, 0, S, S, 60); g.fillStyle = gr; g.fill();
-  g.fillStyle = face.ink; g.font = '800 24px Manrope'; if ('letterSpacing' in g) g.letterSpacing = '3px';
+  g.fillStyle = face.ink; g.font = '800 24px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif'; if ('letterSpacing' in g) g.letterSpacing = '3px';
   g.fillText(`ГРАНЬ ${String(i + 1).padStart(2, '0')}`, 48, 84); if ('letterSpacing' in g) g.letterSpacing = '0px';
-  const fit = fitText(g, face.name, '600 {s}px Unbounded', 420, 3, 60, 34);
-  g.font = `600 ${fit.size}px Unbounded`; const lh = fit.size * 1.14; let y = S - 60 - (fit.lines.length - 1) * lh;
+  const fit = fitText(g, face.name, '800 {s}px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif', 420, 3, 60, 34);
+  g.font = `800 ${fit.size}px Manrope, "Segoe UI", "Helvetica Neue", Arial, sans-serif`; const lh = fit.size * 1.14; let y = S - 60 - (fit.lines.length - 1) * lh;
   for (const l of fit.lines) { g.fillText(l, 48, y); y += lh; }
   return makeTex(c);
 }
@@ -1050,8 +1050,9 @@ async function intro() {
    Boot
    ========================================================= */
 async function boot() {
-  const fontsReady = Promise.all([document.fonts.load('700 60px Manrope'), document.fonts.load('800 30px Manrope'), document.fonts.load('600 60px Unbounded')]).catch(() => {});
-  await Promise.race([fontsReady, sleep(2500)]); // never block the show on fonts
+  const TXT = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯабвгдежзиклмнопрстуфхцчшщъыьэюя AaBb 0123';
+  const fontsReady = Promise.all(['400', '600', '700', '800'].map((w) => document.fonts.load(`${w} 40px Manrope`, TXT))).catch(() => {});
+  await Promise.race([fontsReady, sleep(4000)]); // never block the show on fonts
   buildCube();
   resize();
   navBtns.forEach((b) => b.setAttribute('aria-current', String(+b.dataset.ch === 0)));

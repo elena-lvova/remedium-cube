@@ -38,7 +38,7 @@ export const FACES = [
     ],
   },
   {
-    id: 'audience', side: 'U', name: 'Аудитория и исследования', short: 'Аудитория', color: '#4CC764', ink: '#062008',
+    id: 'audience', side: 'U', name: 'Исследования, сегментация, таргетирование', short: 'Исследования', color: '#4CC764', ink: '#062008',
     lead: 'Точный выбор врачей, ЛПУ и аптек.',
     services: [
       { id: 'u1', label: 'IQKey', team: ['IQDATA'], stage: 'choose', desc: '600+ тыс. специалистов, ЛПУ и аптеки: профили, связи «врач — учреждение», согласия, выборка и передача в CRM.' },
@@ -52,7 +52,7 @@ export const FACES = [
     ],
   },
   {
-    id: 'interaction', side: 'L', name: 'Взаимодействие', short: 'Визиты и CRM', color: '#8B6BFF', ink: '#140A33',
+    id: 'interaction', side: 'L', name: 'Прямые контакты с\u00A0ЦА', short: 'Прямые контакты', color: '#8B6BFF', ink: '#140A33',
     lead: 'Инструменты и команды для контактов с аудиторией.',
     services: [
       { id: 'i1', label: 'Клифар CRM', team: ['Клифар'], stage: 'act', desc: 'Планирование и учёт визитов и омниканальной активности, CLM, анкеты, KPI; веб, iOS, Android, работа офлайн.' },
@@ -80,7 +80,7 @@ export const FACES = [
     ],
   },
   {
-    id: 'digital', side: 'D', name: 'Омниканальность и digital', short: 'Digital', color: '#FFB547', ink: '#2B1A00',
+    id: 'digital', side: 'D', name: 'ОСМ и digital', short: 'ОСМ и digital', color: '#FFB547', ink: '#2B1A00',
     lead: 'Омниканальные кампании от стратегии до измеренного результата.',
     services: [
       { id: 'o1', label: 'ОСМ-стратегия', tag: 'Новый сервис', team: ['CoFactor'], stage: 'choose', desc: 'Цели, сегменты, сообщения, микс каналов и частота контактов на данных рынка, исследованиях и моделировании.' },
