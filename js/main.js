@@ -118,6 +118,11 @@ const rimLight = new THREE.PointLight('#F0449A', 30, 30); rimLight.position.set(
 const fillLight = new THREE.DirectionalLight('#ffffff', 0.6); fillLight.position.set(3, 6, 8); scene.add(fillLight);
 
 // star / data field
+const dotTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.35, 'rgba(255,255,255,0.7)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); return t;
+})();
 const stars = (() => {
   const N = 1400; const pos = new Float32Array(N * 3); const col = new Float32Array(N * 3);
   const palette = ['#19D3C5', '#3D8BFF', '#ffffff', '#4CC764', '#8B6BFF'].map((h) => new THREE.Color(h));
@@ -127,7 +132,7 @@ const stars = (() => {
     const c = palette[(Math.random() * palette.length) | 0]; col.set([c.r, c.g, c.b], i * 3);
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.PointsMaterial({ size: 0.07, vertexColors: true, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending });
+  const m = new THREE.PointsMaterial({ size: 0.14, map: dotTex, vertexColors: true, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending });
   const p = new THREE.Points(g, m); scene.add(p); return p;
 })();
 
@@ -141,7 +146,7 @@ const ring = (() => {
     const c = cols[Math.floor((i / N) * 4) % 4]; col.set([c.r * 1.8, c.g * 1.8, c.b * 1.8], i * 3);
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.PointsMaterial({ size: 0.06, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const m = new THREE.PointsMaterial({ size: 0.12, map: dotTex, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
   const p = new THREE.Points(g, m); p.rotation.x = 0.35; scene.add(p); return p;
 })();
 
@@ -238,7 +243,7 @@ const cubies = []; const stickers = []; const stickerBySvc = {}; const stickerMe
 const stickerGeo = roundedRectGeo(STICKER, 0.1);
 const haloGeo = roundedRectGeo(0.93, 0.12);
 const bodyGeo = new RoundedBoxGeometry(BODY, BODY, BODY, 4, 0.1);
-const bodyMat = new THREE.MeshPhysicalMaterial({ color: '#16123f', metalness: 0.45, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.18, envMapIntensity: 1.1 });
+const bodyMat = new THREE.MeshPhysicalMaterial({ color: '#120e38', metalness: 0.25, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.2, envMapIntensity: 0.55 });
 const spacing = { cur: 1, tgt: 1 };
 
 function buildCube() {
@@ -400,7 +405,7 @@ function computeLayout(items) {
   const by = STAGES.map((s) => items.filter((i) => i.stage === s.id));
   const cols = STAGES.map((s, i) => ({ stage: s, items: by[i] })).filter((c) => c.items.length);
   const aspect = effAspect();
-  const rows = aspect < 1.15;
+  const rows = aspect < 1.15 || window.innerWidth <= 900 && aspect < 1.6;
   const Z = 2; const cardS = 1.12;
   const out = { positions: {}, headers: [], arrows: [], mode: rows ? 'rows' : 'cols', cardS };
   if (!rows) {
@@ -409,19 +414,19 @@ function computeLayout(items) {
     cols.forEach((c, ci) => {
       const x = (ci - (cols.length - 1) / 2) * gx;
       out.headers.push({ stage: c.stage, idx: ci, pos: new THREE.Vector3(x, topY + 0.85, Z) });
-      if (ci > 0) out.arrows.push(new THREE.Vector3(x - gx / 2, topY + 0.55, Z));
+      if (ci > 0) out.arrows.push({ pos: new THREE.Vector3(x - gx / 2, topY + 0.55, Z) });
       c.items.forEach((it, ri) => { out.positions[it.svcId] = new THREE.Vector3(x, topY - ri * gy, Z); });
     });
     out.hw = ((cols.length - 1) / 2) * gx + 0.75; out.hh = ((R - 1) * gy + 0.56 + 1.0) / 2 + 0.15;
   } else {
-    const C = Math.max(...cols.map((c) => c.items.length)); const gx = 1.3; const gy = 1.95;
+    const C = Math.max(...cols.map((c) => c.items.length)); const gx = 1.22; const gy = 1.62;
     const topY = ((cols.length - 1) * gy) / 2 - 0.25;
     cols.forEach((c, ri) => {
       const y = topY - ri * gy;
-      out.headers.push({ stage: c.stage, idx: ri, pos: new THREE.Vector3(-((C - 1) / 2) * gx - 0.56, y + 0.98, Z), left: true });
+      out.headers.push({ stage: c.stage, idx: ri, pos: new THREE.Vector3(-((C - 1) / 2) * gx - 0.56, y + 0.8, Z), left: true });
       c.items.forEach((it, ci) => { out.positions[it.svcId] = new THREE.Vector3((ci - (C - 1) / 2) * gx, y, Z); });
     });
-    out.hw = ((C - 1) / 2) * gx + 0.7; out.hh = ((cols.length - 1) * gy) / 2 + 1.3;
+    out.hw = ((C - 1) / 2) * gx + 0.62; out.hh = ((cols.length - 1) * gy) / 2 + 1.0;
   }
   return out;
 }
@@ -442,7 +447,7 @@ function updateLabels() {
   if (!layout) return; const W = window.innerWidth; const H = window.innerHeight;
   const place = (el, pos) => { _v.copy(pos).project(camera); el.style.left = `${((_v.x + 1) / 2) * W}px`; el.style.top = `${((1 - _v.y) / 2) * H}px`; };
   layout.headers.forEach((h) => h.el && place(h.el, h.pos));
-  layout.arrows.forEach((a) => a.el && place(a.el, a.pos));
+  layout.arrows.forEach((a) => a.el && a.pos && place(a.el, a.pos));
 }
 
 async function flyOut(items) {
@@ -450,13 +455,13 @@ async function flyOut(items) {
   updateLayoutTargets();
   sfx.whoosh();
   const hp0 = holder.position.clone(); const hs0 = holder.scale.x;
-  tween(1100, (e) => { holder.position.lerpVectors(hp0, new THREE.Vector3(0, 0.2, -5.5), e); holder.scale.setScalar(hs0 + (0.62 - hs0) * e); }, ease.inOut);
+  tween(1100, (e) => { holder.position.lerpVectors(hp0, new THREE.Vector3(0, 0.2, -4), e); holder.scale.setScalar(Math.max(0.001, hs0 + (0.001 - hs0) * e)); }, ease.inOut);
   const ps = [];
   items.forEach((it, i) => {
     const st = stickerBySvc[it.svcId]; if (!st) return;
     const stage = STAGE_MAP[it.stage];
     const mesh = new THREE.Mesh(stickerGeo, new THREE.MeshBasicMaterial({ map: st.mesh.material.map, toneMapped: false, side: THREE.DoubleSide }));
-    const halo = new THREE.Mesh(haloGeo, new THREE.MeshBasicMaterial({ color: new THREE.Color(stage.color).multiplyScalar(2.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+    const halo = new THREE.Mesh(haloGeo, new THREE.MeshBasicMaterial({ color: new THREE.Color(stage.color).multiplyScalar(1.15), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
     halo.position.z = -0.01; halo.scale.setScalar(1.06); mesh.add(halo);
     const card = { mesh, halo, svcId: it.svcId, stage: it.stage, sticker: st };
     mesh.userData.card = card;
@@ -475,7 +480,7 @@ async function flyOut(items) {
       mesh.position.set(a * p0.x + b * mid.x + c * p1.x, a * p0.y + b * mid.y + c * p1.y, a * p0.z + b * mid.z + c * p1.z);
       mesh.quaternion.slerpQuaternions(q0, q1, e);
       mesh.scale.setScalar(s0 + (layout.cardS - s0) * e);
-      halo.material.opacity = e * 0.95;
+      halo.material.opacity = e * 0.55;
     }, ease.outQuint, delay));
   });
   await Promise.all(ps);
@@ -497,7 +502,7 @@ async function clearSolution() {
       holder.updateMatrixWorld(true);
       card.sticker.mesh.getWorldPosition(tp); card.sticker.mesh.getWorldQuaternion(tq); card.sticker.mesh.getWorldScale(ts);
       card.mesh.position.lerpVectors(p0, tp, e); card.mesh.quaternion.slerpQuaternions(q0, tq, e);
-      card.mesh.scale.setScalar(s0 + (ts.x - s0) * e); card.halo.material.opacity = 0.95 * (1 - e);
+      card.mesh.scale.setScalar(s0 + (ts.x - s0) * e); card.halo.material.opacity = 0.55 * (1 - e);
     }, ease.inOut, i * 30).then(() => {
       card.sticker.mesh.visible = true; cardGroup.remove(card.mesh); card.mesh.material.dispose(); card.halo.material.dispose();
     });
@@ -605,7 +610,13 @@ function plural(n, a, b, c) { const m10 = n % 10, m100 = n % 100; if (m10 === 1 
 function selectCompany(id) {
   state.company = state.company === id ? null : id;
   panel.querySelectorAll('.company').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.company === state.company)));
-  if (state.company) sfx.select();
+  if (state.company) {
+    sfx.select();
+    // turn the cube toward the face where this team has the most tiles
+    let best = 0, bestN = -1;
+    FACES.forEach((f, i) => { const n = f.services.filter((x) => x.team.includes(state.company)).length; if (n > bestN) { bestN = n; best = i; } });
+    orientTo(faceQuat(FACES[best].side), 1000); pointer.lastMove = performance.now() + 1500;
+  }
   setTargets();
 }
 
