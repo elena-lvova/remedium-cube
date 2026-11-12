@@ -4,16 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Куб возможностей — ГК «Ремедиум» · IQDATA</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap&subset=cyrillic" rel="stylesheet" />
+<link rel="stylesheet" href="fonts.css" />
 <link rel="stylesheet" href="./styles.css" />
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-} }
-</script>
 </head>
 <body>
 <div id="app" data-chapter="0">
@@ -62,6 +54,14 @@
 
   <div id="loader" class="loader"><div class="loader-cube"></div><p>Собираем куб возможностей…</p></div>
 </div>
-<script type="module" src="./js/main.js"></script>
+<script>
+  (function () {
+    function msg(t) { var l = document.getElementById('loader'); if (l && !l.classList.contains('done')) l.querySelector('p').textContent = t; }
+    var c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) msg('Браузер не поддерживает 3D (WebGL). Откройте страницу в Chrome, Edge или Safari и включите аппаратное ускорение.');
+    window.addEventListener('error', function () { msg('Не удалось загрузить куб. Обновите страницу или откройте её в Chrome.'); });
+    setTimeout(function () { msg('Почти готово… Если куб не появился, обновите страницу.'); }, 15000);
+  })();
+</script>
+<script type="module" src="./js/app.js"></script>
 </body>
 </html>

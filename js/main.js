@@ -952,8 +952,8 @@ async function intro() {
    Boot
    ========================================================= */
 async function boot() {
-  try { await Promise.all([document.fonts.load('700 60px Manrope'), document.fonts.load('800 30px Manrope'), document.fonts.load('600 60px Unbounded')]); } catch (e) { /* fallback fonts */ }
-  await document.fonts.ready;
+  const fontsReady = Promise.all([document.fonts.load('700 60px Manrope'), document.fonts.load('800 30px Manrope'), document.fonts.load('600 60px Unbounded')]).catch(() => {});
+  await Promise.race([fontsReady, sleep(2500)]); // never block the show on fonts
   buildCube();
   resize();
   navBtns.forEach((b) => b.setAttribute('aria-current', String(+b.dataset.ch === 0)));
