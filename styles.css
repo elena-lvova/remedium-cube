@@ -218,3 +218,16 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   .stage-label span { display: none; }
   .stage-label { flex-direction: row; }
 }
+
+/* ---------- IQDATA logo ---------- */
+.iq-logo { display: block; height: 34px; width: auto; color: #fff; overflow: visible; }
+.iq-logo .logo-orbit { transform-box: view-box; transform-origin: 46px 42px; animation: swing 7s ease-in-out infinite alternate; }
+.loader-logo .logo-word { display: none; }
+.brand-sep { width: 1px; height: 22px; background: rgba(255,255,255,.22); }
+.brand-group { font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--muted); white-space: nowrap; }
+.loader-logo { height: 72px; }
+.loader-logo .logo-orbit { animation: orbit 1.6s cubic-bezier(.6,.1,.3,.9) infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes swing { from { transform: rotate(-42deg); } to { transform: rotate(6deg); } }
+@media (max-width: 900px) { .iq-logo { height: 22px; } .brand-sep, .brand-group { display: none; } .loader-logo { height: 48px; } }
+@media (prefers-reduced-motion: reduce) { .iq-logo .logo-orbit { animation: none; } }
